@@ -1,0 +1,117 @@
+#list of data 
+#link: https://www.kaggle.com/code/mpwolke/obesity-levels-life-style/notebook 
+DataFrameObesity.head() 
+list(DataFrameObesity) 
+  
+#head 
+DataFrameObesity.head() 
+  
+#data types 
+DataFrameObesity.dtypes 
+  
+#descriptive analysis 
+DataFrameObesity.describe() 
+  
+#histogram and boxplot of weight 
+DataFrameObesity['Weight'].plot.hist(bins = 30, edgecolor = 'white', linewidth = 1.0) 
+plt.ylabel('Frequency', fontsize = 14)  
+plt.xlabel('Weight (kg)', fontsize = 14)  
+plt.title('Weight Distribution', fontsize = 20) 
+  
+#histogram and boxplot of height 
+DataFrameObesity['Height'].plot.hist(bins = 30, edgecolor = 'white', linewidth = 1.0) 
+plt.ylabel('Frequency', fontsize = 14)  
+plt.xlabel('Height (m)', fontsize = 14)  
+plt.title('Height Distribution', fontsize = 20) 
+  
+#histogram and boxplot of age 
+DataFrameObesity['Height'].plot.hist(bins = 30, edgecolor = 'white', linewidth = 1.0) 
+plt.ylabel('Frequency', fontsize = 14)  
+plt.xlabel(Age (years)', fontsize = 14)  
+plt.title('Age Distribution', fontsize = 20) 
+  
+#histogram and boxplot of FCVC 
+DataFrameObesity['Height'].plot.hist(bins = 30, edgecolor = 'white', linewidth = 1.0) 
+plt.ylabel('Frequency', fontsize = 14)  
+plt.xlabel('Height (m)', fontsize = 14)  
+plt.title('Height Distribution', fontsize = 20) 
+  
+  
+  
+  
+  
+#boxplot of weight 
+plt.figure(figsize=(45, 4)) 
+plt.subplot(122) 
+sns.boxplot(x = 'Weight', data = DataFrameObesity) 
+plt.title('Boxplot of Weight', fontsize = 20) 
+plt.show() 
+  
+#boxplot of height 
+plt.figure(figsize=(45, 4)) 
+plt.subplot(122) 
+sns.boxplot(x = 'Height', data = DataFrameObesity) 
+plt.title('Boxplot of Height', fontsize = 20) 
+plt.show() 
+  
+#boxplot of age 
+plt.figure(figsize=(45, 4)) 
+plt.subplot(122) 
+sns.boxplot(x = 'Age', data = DataFrameObesity) 
+plt.title('Boxplot of Age', fontsize = 20) 
+plt.show() 
+  
+#boxplot of FCVC 
+plt.figure(figsize=(45, 4)) 
+plt.subplot(122) 
+sns.boxplot(x = 'FCVC', data = DataFrameObesity) 
+plt.title('Boxplot of FCVC, fontsize = 20) 
+plt.show() 
+  
+#scatter plot of weight against height 
+plt.scatter(DataFrameObesity['Weight'], DataFrameObesity['Height'], s = 60) 
+sns.regplot(DataFrameObesity['Weight'], DataFrameObesity['Height'], ci = None) 
+plt.ylabel('Weight', fontsize = 14) 
+plt.xlabel('Height',fontsize = 14) 
+plt.title('Relationship between Weight and Height',fontsize = 18) 
+  
+#scatter plot of weight against age 
+plt.scatter(DataFrameObesity['Weight'], DataFrameObesity['Age'], s = 60) 
+sns.regplot(DataFrameObesity['Weight'], DataFrameObesity['Age'], ci = None) 
+plt.ylabel('Weight', fontsize = 14) 
+plt.xlabel('Age',fontsize = 14) 
+plt.title('Relationship between Weight and Age',fontsize = 18) 
+#scatter plot of weight against FCVC 
+plt.scatter(DataFrameObesity['Weight'], DataFrameObesity['FCVC'], s = 60) 
+sns.regplot(DataFrameObesity['Weight'], DataFrameObesity['FCVC'], ci = None) 
+plt.ylabel('Weight', fontsize = 14) 
+plt.xlabel('FCVC',fontsize = 14) 
+plt.title('Relationship between Weight and FCVC',fontsize = 18) 
+  
+  
+#correlation among the three IVs; Height, Age, FCVC 
+x = DataFrameObesity[['Height', 'Age', 'FCVC']]  
+x.corr(method = 'pearson') 
+  
+#building model 4 which is mutiple linear regression 
+y = DataFrameObesity['Weight'] # DV 
+x2 = DataFrameObesity[['Height', 'Age', 'FCVC']] # 'Height', 'FCVC' and 'Age' as the IVs 
+x2 = sm.add_constant(x2) 
+Model4 = sm.OLS(y, x2).fit() 
+print(Model4.summary()) 
+  
+#checking for homoscedasticity  
+error = Model4.resid 
+plt.figure(figsize=(20,10)) 
+sns.regplot(x = y_pred, y = error, ci = None, line_kws =  
+{'color':'red'}) 
+plt.title('Residuals vs Predicted Values', fontsize=16) 
+plt.xlabel('Predicted Values') 
+plt.ylabel('Residuals') 
+  
+#checking for normality 
+plt.style.use('seaborn-deep')  
+plt.rcParams['figure.figsize'] = [20, 15] 
+error.plot.hist(grid = True, bins = 50, edgecolor = 'gray', linewidth =  
+1.0) 
+plt.title('Distribution of Residuals', fontsize = 20 
