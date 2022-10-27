@@ -1,0 +1,111 @@
+#Using R programming language
+#STEP 1 Install and load all neccessary Libraries
+#install.packages("FSelector")
+#install.packages("dplyr")
+#install.packages("caret")
+#install.packages("data.tree")
+#install.packages("psych")
+#install.packages("C50")
+#install.packages("ggplot2")
+##########################################
+#Load packages
+#library(FSelector)
+#library(caret)
+#library(dplyr)
+#library(data.tree)
+#library(psych)
+#library(C50)
+library(ggplot2)
+*******************************
+ ## STEP 2: Loading dataset 
+pax_survey_train <- read.csv("train.csv", stringsAsFactors = TRUE) 
+ #check data structure
+str(pax_survey_train)
+#############################################################
+##STEP 3
+#Summarizing and describing the data
+describe(pax_survey_train$Age)
+describe(pax_survey_train$Flight.Distance)
+describe(pax_survey_train$Departure.Delay.in.Minutes)
+describe(pax_survey_train$Departure.Arrival.time.convenient)
+summary(pax_survey_train)
+
+age<-ggplot(pax_survey_train, aes(x=Age))+
+geom_histogram(fill="#0000FF")+
+labs(x="Age")
+age
+
+Flight Distance<-ggplot(pax_survey_train, aes(x=Flight.Distance))+
+ geom_histogram(fill="#0000FF")+
+labs(x="Flight Distance")
+Flight Distance
+
+Dep_Delay <-ggplot(pax_survey_train, aes(x=Departure.Delay.in.Minutes))+
+ geom_histogram(fill="#0000FF")+
+ labs(x="Delay In Departure(mins)")
+Dep_Delay
+
+Delay_Arrival <- ggplot(pax_survey_train, aes(x=Arrival.Delay.in.Minutes))+
+geom_histogram(fill="#0000FF")+
+labs(x="Delay In Arrival(mins)")
+Delay_Arrival 
+
+#BARPLOT
+gender<-ggplot(pax_survey_train, aes(Gender, fill=satisfaction))+
+  geom_bar(position="fill")+ylab("proportion") +
+    stat_count(geom = "text", 
+             aes(label = stat(count)),
+             position=position_fill(vjust=0.5), colour="black")
+  
+
+class<-ggplot(pax_survey_train, aes(Class, fill=satisfaction))+
+  geom_bar(position="fill")+ylab("proportion") +
+    stat_count(geom = "text", 
+             aes(label = stat(count)),
+             position=position_fill(vjust=0.5), colour="black")
+
+Type_of_Travel <-ggplot(pax_survey_train, aes(Type.of.Travel , fill=satisfaction))+
+  geom_bar(position="fill")+ylab("proportion") +
+    stat_count(geom = "text", 
+             aes(label = stat(count)),
+             position=position_fill(vjust=0.5), colour="black")
+
+Customer_Type <-ggplot(pax_survey_train, aes(Customer.Type , fill=satisfaction))+
+  geom_bar(position="fill")+ylab("proportion") +
+    stat_count(geom = "text", 
+             aes(label = stat(count)),
+             position=position_fill(vjust=0.5), colour="black")
+
+
+****************************************
+##STEP 4
+#Split Data and check the proportion
+prop.table(summary(pax_survey_train$satisfaction))
+prop.table(summary(pax_survey_test$satisfaction))
+#############################################################
+#STEP 5
+#Training and testing the Decision Tree Classifier 
+#Plot tree
+satisfaction_tree <- rpart(satisfaction~., data = pax_survey_train)
+prp(satisfaction_tree)
+
+
+satisfaction_model <- C5.0(pax_survey_train[-25], pax_survey_train$satisfaction,
++                       control = C5.0Control(minCases = 500))
+ satisfaction_model
+plot 
+#############################################################
+#STEP 6
+#Check most significant variables 
+satisfaction_tree$variable.importance
+
+***********C5imp( satisfaction_model)*************FOR C5.0
+############################################################
+#STEP  7
+# Predictions
+satisfaction_prediction <- predict(satisfaction_tree, pax_survey_test, type = "class")
+******satisfaction_pred <- predict(satisfaction_model,pax_survey_test )*************C5.0
+############################################################
+#STEP 8
+#Evaluating model using the confusion matrix
+confusionMatrix(satisfaction_prediction, pax_survey_test$satisfaction)
